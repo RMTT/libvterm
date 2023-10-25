@@ -4,4 +4,4 @@
 
 #### WIP:
 
-+ push current screen to scrollback buffer when feed CUP(ESC[n;mH)
++ push current screen to scrollback buffer when feed ED(ESC[2J)

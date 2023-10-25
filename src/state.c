@@ -1039,7 +1039,7 @@ static int on_csi(const char *leader, const long args[], int argcount, const cha
     break;
 
   case 0x48: // CUP - ECMA-48 8.3.21
-    row = CSI_ARG_OR(args[0], 1);
+            row = CSI_ARG_OR(args[0], 1);
     col = argcount < 2 || CSI_ARG_IS_MISSING(args[1]) ? 1 : CSI_ARG(args[1]);
     // zero-based
     state->pos.row = row-1;
@@ -1092,8 +1092,12 @@ static int on_csi(const char *leader, const long args[], int argcount, const cha
     case 2:
       rect.start_row = 0; rect.end_row = state->rows;
       rect.start_col = 0; rect.end_col = state->cols;
-      for(int row = rect.start_row; row < rect.end_row; row++)
+      for(int row = rect.start_row; row < rect.end_row; row++) {
+        // TODO: only push used line
+        if(state->callbacks && state->callbacks->sb_pushline)
+          (*state->callbacks->sb_pushline)(row, state->cbdata);
         set_lineinfo(state, row, FORCE, DWL_OFF, DHL_OFF);
+      }
       erase(state, rect, selective);
       break;
 

@@ -437,6 +437,7 @@ typedef struct {
   int (*resize)(int rows, int cols, VTermStateFields *fields, void *user);
   int (*setlineinfo)(int row, const VTermLineInfo *newinfo, const VTermLineInfo *oldinfo, void *user);
   int (*sb_clear)(void *user);
+  void (*sb_pushline)(int row, void *user);
 } VTermStateCallbacks;
 
 typedef struct {
