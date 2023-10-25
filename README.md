@@ -2,6 +2,6 @@
 
 ### Modifications
 
-#### WIP:
+#### DONE:
 
 + push current screen to scrollback buffer when feed ED(ESC[2J)
