@@ -1,2 +1,10 @@
 .direnv
 .envrc
+compile_commands.json
+*.o
+*.so
+*.lo
+*.la
+.libs
+.cache
+build
