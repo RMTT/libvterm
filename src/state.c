@@ -1095,7 +1095,7 @@ static int on_csi(const char *leader, const long args[], int argcount, const cha
       for(int row = rect.start_row; row < rect.end_row; row++) {
         // TODO: only push used line
         if(state->callbacks && state->callbacks->sb_pushline)
-          (*state->callbacks->sb_pushline)(row, state->cbdata);
+          (*state->callbacks->sb_pushline)(row, 1, state->cbdata);
         set_lineinfo(state, row, FORCE, DWL_OFF, DHL_OFF);
       }
       erase(state, rect, selective);
