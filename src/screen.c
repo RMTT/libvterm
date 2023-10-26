@@ -205,10 +205,19 @@ static int putglyph(VTermGlyphInfo *info, VTermPos pos, void *user)
   return 1;
 }
 
-static void sb_pushline_from_row(int row, void *user)
+static void sb_pushline_from_row(int row, int drop_none, void *user)
 {
   VTermScreen *screen = (VTermScreen *)user;
   VTermPos pos = { .row = row };
+
+  if (drop_none) {
+    VTermScreenCell start_cell;
+    vterm_screen_get_cell(screen, pos, &start_cell);
+
+    if (start_cell.chars[0] == 0)
+        return;
+  }
+
   for(pos.col = 0; pos.col < screen->cols; pos.col++)
     vterm_screen_get_cell(screen, pos, screen->sb_buffer + pos.col);
 
@@ -224,7 +233,7 @@ static int moverect_internal(VTermRect dest, VTermRect src, void *user)
      dest.end_col == screen->cols &&                      // full width
      screen->buffer == screen->buffers[BUFIDX_PRIMARY]) { // not altscreen
     for(int row = 0; row < src.start_row; row++)
-      sb_pushline_from_row(row, screen);
+      sb_pushline_from_row(row, 0, screen);
   }
 
   int cols = src.end_col - src.start_col;
@@ -670,7 +679,7 @@ static void resize_buffer(VTermScreen *screen, int bufidx, int new_rows, int new
     /* Push spare lines to scrollback buffer */
     if(screen->callbacks && screen->callbacks->sb_pushline)
       for(int row = 0; row <= old_row; row++)
-        sb_pushline_from_row(row, screen);
+        sb_pushline_from_row(row, 0, screen);
     if(active)
       statefields->pos.row -= (old_row + 1);
   }
